@@ -28,6 +28,48 @@ namespace Task7
                 return "Булева функция должна иметь длину равную степени двойки";
             return string.Empty;
         }
+        static StringBuilder[] FillString(string input)
+        {
+            int starCount = 0;
+            foreach (char c in input)
+                if (c == '*')
+                    starCount++;
+
+            var strings = new StringBuilder[(int)Math.Pow(2, starCount)];
+            for (int i = 0; i < strings.Length; i++)
+            {
+                strings[i] = new StringBuilder(input);
+
+                string p = Convert.ToString(i, 2);
+                int pl = p.Length;
+                for (int l = 0; l < starCount - pl; l++)
+                    p = "0" + p;
+                for (int j = 0, k = 0; j < strings[i].Length; j++)
+                {
+                    if (strings[i][j] == '*')
+                        strings[i][j] = p[k++];
+                }
+            }
+            return strings;
+        }
+        static List<string> CheckValid(StringBuilder[] strings)
+        {
+            List<string> validStrings = new List<string>(0);
+            foreach (StringBuilder s in strings)
+            {
+                bool p = true;
+                for (int i = 0; i < s.Length / 2; i++)
+                    if (s[i] == s[s.Length - 1 - i])
+                    {
+                        p = false;
+                        break;
+                    }
+
+                if (!p)
+                    validStrings.Add(s.ToString());
+            }
+            return validStrings;
+        }
 
         static void Main(string[] args)
         {
@@ -49,51 +91,13 @@ namespace Task7
             if(!input.Contains("*"))
                 WriteLine("Функция уже определена");
             else
-            {
-                int starCount = 0;
-                foreach (char c in input)
-                    if (c == '*')
-                        starCount++;
+                allStrings = FillString(input);
 
-                allStrings = new StringBuilder[(int)Math.Pow(2,starCount)];
-                for (int i = 0; i < allStrings.Length; i++)
-                {
-                    allStrings[i] = new StringBuilder(input);
+            var validStrings = CheckValid(allStrings);
+            WriteLine(validStrings.Count == 0
+                ? "Эту функцию нельзя доопределить как НЕ самодвойственную"
+                : string.Join("\n", validStrings));
 
-                    string p = Convert.ToString(i, 2);
-                    int pl = p.Length;
-                    for (int l = 0; l < starCount - pl; l++)
-                        p = "0" + p;
-                    for (int j = 0, k = 0; j < allStrings[i].Length; j++)
-                    {
-                        if (allStrings[i][j] == '*')
-                            allStrings[i][j] = p[k++];
-
-                    }
-                }
-            }
-
-            List<string> validStrings = new List<string>(0);
-            foreach (StringBuilder s in allStrings)
-            {
-                bool p = true;
-                for (int i = 0; i < s.Length/2; i++)
-                    if (s[i] == s[s.Length - 1 - i])
-                    {
-                        p = false;
-                        break;
-                    }
-
-                if(!p)
-                    validStrings.Add(s.ToString());
-            }
-
-            if(validStrings.Count == 0)
-                WriteLine("Эту функцию нельзя доопределить как НЕ самодвойственную");
-            else
-            {
-                WriteLine(string.Join("\n",validStrings));
-            }
             ReadKey(true);
         }
     }
