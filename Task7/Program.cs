@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Text;
 
 using static System.Console;
 
@@ -13,7 +15,7 @@ namespace Task7
 
             bool p = false;
             foreach (char c in input)
-                if (c != '0' || c != '1' || c != '*')
+                if (!(c == '0' || c == '1' || c == '*'))
                 {
                     p = true;
                     break;
@@ -26,11 +28,18 @@ namespace Task7
                 return "Булева функция должна иметь длину равную степени двойки";
             return string.Empty;
         }
+        static int factorial(int num)
+        {
+            if (num == 0)
+                return 1;
+            return num * factorial(num - 1);
+        }
 
         static void Main(string[] args)
         {
             string input;
             WriteLine("Введите булеву функцию. Возможные символы: '0', '1', '*'.");
+            WriteLine("Функция будет доопределена как НЕ самодвойственная");
 
             while (true)
             {
@@ -40,12 +49,53 @@ namespace Task7
                     break;
                 WriteLine(p);
             }
+            WriteLine();
 
+            var allStrings = new[] { new StringBuilder(input) };
+            if(!input.Contains("*"))
+                WriteLine("Функция уже определена");
+            else
+            {
+                int starCount = 0;
+                foreach (char c in input)
+                    if (c == '*')
+                        starCount++;
 
+                allStrings = new StringBuilder[factorial(starCount)];
+                for (int i = 0; i < allStrings.Length; i++)
+                {
+                    allStrings[i] = new StringBuilder(input);
+                    for (int j = 0, k = 0; j < allStrings[i].Length; j++)
+                    {
+                        string p = Convert.ToString(i,2);
+                        if (allStrings[i][j] == '*')
+                            allStrings[i][j] = p[k++];
 
+                    }
+                }
+            }
 
+            List<string> validStrings = new List<string>(0);
+            foreach (StringBuilder s in allStrings)
+            {
+                bool p = true;
+                for (int i = 0; i < s.Length/2; i++)
+                    if (s[i] == s[s.Length - 1 - i])
+                    {
+                        p = false;
+                        break;
+                    }
 
+                if(p)
+                    validStrings.Add(s.ToString());
+            }
 
+            if(validStrings.Count == 0)
+                WriteLine("Эту функцию нельзя доопределить как НЕ самодвойственную");
+            else
+            {
+                WriteLine(string.Join("\n",validStrings));
+            }
         }
     }
 }
