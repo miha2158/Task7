@@ -28,12 +28,6 @@ namespace Task7
                 return "Булева функция должна иметь длину равную степени двойки";
             return string.Empty;
         }
-        static int factorial(int num)
-        {
-            if (num == 0)
-                return 1;
-            return num * factorial(num - 1);
-        }
 
         static void Main(string[] args)
         {
@@ -61,13 +55,17 @@ namespace Task7
                     if (c == '*')
                         starCount++;
 
-                allStrings = new StringBuilder[factorial(starCount)];
+                allStrings = new StringBuilder[(int)Math.Pow(2,starCount)];
                 for (int i = 0; i < allStrings.Length; i++)
                 {
                     allStrings[i] = new StringBuilder(input);
+
+                    string p = Convert.ToString(i, 2);
+                    int pl = p.Length;
+                    for (int l = 0; l < starCount - pl; l++)
+                        p = "0" + p;
                     for (int j = 0, k = 0; j < allStrings[i].Length; j++)
                     {
-                        string p = Convert.ToString(i,2);
                         if (allStrings[i][j] == '*')
                             allStrings[i][j] = p[k++];
 
@@ -86,7 +84,7 @@ namespace Task7
                         break;
                     }
 
-                if(p)
+                if(!p)
                     validStrings.Add(s.ToString());
             }
 
@@ -96,6 +94,7 @@ namespace Task7
             {
                 WriteLine(string.Join("\n",validStrings));
             }
+            ReadKey(true);
         }
     }
 }
