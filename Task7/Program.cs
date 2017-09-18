@@ -26,7 +26,7 @@ namespace Task7
             double value = Math.Log(input.Length, 2);
             if ((int)value != value)
                 return "Булева функция должна иметь длину равную степени двойки";
-            return string.Empty;
+            return null;
         }
         static StringBuilder[] FillString(string input)
         {
@@ -81,7 +81,7 @@ namespace Task7
             {
                 input = ReadLine();
                 string p = CheckInput(input);
-                if(p == string.Empty)
+                if(p == null)
                     break;
                 WriteLine(p);
             }
